@@ -1,25 +1,39 @@
-import logo from './logo.svg';
+import React, {useState, useEffect,useRef} from 'react';
 import './App.css';
+import Toggle from './Toggle';
 
-function App() {
+function Clock() {
+const timerRef = useRef();
+const [time, setTime] = useState(new Date());
+
+useEffect(()=>{
+  console.log('componentdidmount')
+  start();
+
+  return()=>{
+    console.log('componentwillunmount');
+    stop();
+  };
+},[]);
+
+function start(){
+  const id = setInterval(()=>{
+    setTime(new Date());
+  },1000);
+  timerRef.current = id;
+  console.log(timerRef.current);
+}
+
+function stop(){
+  clearInterval(timerRef.current);
+}
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{margin: '30px'}}>
+      {time.toLocaleTimeString()}
+      <Toggle start={start} stop={stop}/>
     </div>
   );
 }
 
-export default App;
+export default Clock;
